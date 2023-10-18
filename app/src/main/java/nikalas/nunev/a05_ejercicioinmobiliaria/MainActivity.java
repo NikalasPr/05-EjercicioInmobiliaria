@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> addInmuebleLauncher;
     private ActivityResultLauncher<Intent> editInmuebleLauncher;
 
+    private Inmueble inmuebleOrigen;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,18 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         //a la vuelta de editar
+                        if (result.getResultCode() == RESULT_OK){
+                            if (result.getData() != null && result.getData().getExtras() != null){
+                                //modifico
+
+                            }else{
+                                //elimino
+                                listaInmuebles.remove(inmuebleOrigen);
+                                mostrarInmuebles();
+                            }
+                        }else {
+                            Toast.makeText(MainActivity.this, "Accion Cancelada", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
@@ -108,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
             lbCiudad.setText(inmueble.getCiudad());
             rbValoracion.setRating(inmueble.getValoracion());
 
+
+
             inmuebleView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -115,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("INMUEBLE", inmueble);
                     intent.putExtras(bundle);
+                    inmuebleOrigen = inmueble;
                     editInmuebleLauncher.launch(intent);
                 }
             });
