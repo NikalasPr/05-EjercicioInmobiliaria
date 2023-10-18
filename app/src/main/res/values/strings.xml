@@ -8,4 +8,6 @@
     <string name="cp">CP</string>
     <string name="cancelar">CANCELAR</string>
     <string name="crear">CREAR</string>
+    <string name="editar">EDITAR</string>
+    <string name="eliminar">ELIMINAR</string>
 </resources>

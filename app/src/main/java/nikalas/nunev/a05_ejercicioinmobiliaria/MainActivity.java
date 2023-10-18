@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.core.view.WindowCompat;
@@ -24,6 +25,8 @@ import nikalas.nunev.a05_ejercicioinmobiliaria.modelos.Inmueble;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -69,9 +72,11 @@ public class MainActivity extends AppCompatActivity {
                             if (result.getData() != null && result.getData().getExtras() != null){
                                 Inmueble inmueble = (Inmueble) result.getData().getExtras().getSerializable("INMUEBLE");
                                 Toast.makeText(MainActivity.this, inmueble.toString(), Toast.LENGTH_SHORT).show();
+                                listaInmuebles.add(inmueble);
+                                mostrarInmuebles();
                             }
                         }else {
-                            Toast.makeText(MainActivity.this, "Accion Cancelada", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(MainActivity.this, "Accion Cancelada", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -84,6 +89,38 @@ public class MainActivity extends AppCompatActivity {
                         //a la vuelta de editar
                     }
                 });
+    }
+
+    private void mostrarInmuebles() {
+        binding.contentMain.contenedor.removeAllViews();
+
+        for (int i = 0; i < listaInmuebles.size(); i++) {
+            Inmueble inmueble = listaInmuebles.get(i);
+
+            View inmuebleView = LayoutInflater.from(MainActivity.this).inflate(R.layout.inmueble_model_view, null);
+            TextView lbDireccion = inmuebleView.findViewById(R.id.lbDireccionInmuebleModel);
+            TextView lbNumero = inmuebleView.findViewById(R.id.lbNumeroInmuebleModel);
+            TextView lbCiudad = inmuebleView.findViewById(R.id.lbCiudadInmuebleModel);
+            RatingBar rbValoracion = inmuebleView.findViewById(R.id.rbValoracionInmuebleModel);
+
+            lbDireccion.setText(inmueble.getDireccion());
+            lbNumero.setText(String.valueOf(inmueble.getNumero()));
+            lbCiudad.setText(inmueble.getCiudad());
+            rbValoracion.setRating(inmueble.getValoracion());
+
+            inmuebleView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, EditarInmuebleActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("INMUEBLE", inmueble);
+                    intent.putExtras(bundle);
+                    editInmuebleLauncher.launch(intent);
+                }
+            });
+
+            binding.contentMain.contenedor.addView(inmuebleView);
+        }
     }
 
 
